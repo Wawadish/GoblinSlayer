@@ -34,7 +34,7 @@ public class SpaceInvaders extends Application {
         StackPane root = new StackPane();
         root.getChildren().add(btn);
         
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root, 1280, 720);
         
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
