@@ -10,7 +10,8 @@ package space.invaders;
  * @author Sam
  */
 public class Enemy extends GameObject{
-     private Vector2D position;
+    
+    private Vector2D position;
     private Vector2D velocity;
     private Vector2D acceleration;
 
@@ -37,4 +38,4 @@ public class Enemy extends GameObject{
     }
     
 }
-}
+
