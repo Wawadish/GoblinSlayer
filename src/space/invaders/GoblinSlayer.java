@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -17,28 +18,23 @@ import javafx.stage.Stage;
  *
  * @author wawad
  */
-public class SpaceInvaders extends Application {
+public class GoblinSlayer extends Application {
+    
+    private static Stage window;
+    private static Scene scene;
     
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+        window = primaryStage;
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        AssetManager.preloadAllAssets();
+        MenuPane menu = new MenuPane();
         
-        Scene scene = new Scene(root, 1280, 720);
+        scene = new Scene(menu, 1280, 720);
         
-        primaryStage.setTitle("Hello World!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        window.setTitle("Goblin Slayer");
+        window.setScene(scene);
+        window.show();
     }
 
     /**
@@ -46,6 +42,11 @@ public class SpaceInvaders extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    public static void changePane(Pane p){
+        scene = new Scene(p, 1280, 720);
+        window.setScene(scene);
     }
     
 }
