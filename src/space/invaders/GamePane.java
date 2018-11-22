@@ -1,23 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package space.invaders;
 
 import javafx.scene.layout.Pane;
 
-/**
- *
- * @author wawad
- */
-public class GamePane extends Pane{
-    
-    public GamePane(){
-        
+public class GamePane extends Pane {
+
+    public GamePane() {
+
         AssetManager.stopAllSound();
+        AssetManager.getAudio(1).play();
         setBackground(AssetManager.getBackground(1));
-        
-        
+
+        //the player constructor is waaaay to complicated
+        Player player = new Player(new Vector2D(1280 / 2, 720 / 2), new Vector2D(1, 1), new Vector2D(0, 0), USE_PREF_SIZE, USE_PREF_SIZE, USE_PREF_SIZE, USE_PREF_SIZE);
+
     }
 }

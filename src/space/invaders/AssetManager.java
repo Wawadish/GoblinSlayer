@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package space.invaders;
 
 import java.io.File;
@@ -17,20 +12,18 @@ import javafx.scene.media.AudioClip;
 import javafx.scene.paint.ImagePattern;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author wawad
- */
 public class AssetManager {
-    static private ArrayList<Background> backgrounds = new ArrayList<>();
-    static private ArrayList<ImagePattern> goblins = new ArrayList<>();
-    static private ArrayList<AudioClip> audio = new ArrayList<>();
     
-    static private String fileURL(String relativePath){
+    private static ArrayList<Background> backgrounds = new ArrayList<>();
+    private static ArrayList<ImagePattern> goblins = new ArrayList<>();
+    private static ArrayList<AudioClip> audio = new ArrayList<>();
+    private static ArrayList<ImagePattern> swords = new ArrayList<>();
+    
+    private static String fileURL(String relativePath){
         return new File(relativePath).toURI().toString();
     }
     
-    static public void preloadAllAssets(){
+    public static void preloadAllAssets(){
         try{
             addBackground("Menu Background.png");
             addBackground("Earth Cave Background.png");
@@ -42,11 +35,17 @@ public class AssetManager {
             addSound("Projectile Fire.wav");
             addSound("Goblin Death.wav");
             addSound("Victory.wav");
+            
+            addSword("original sword");
+            addSword("used sword");
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error! Some files cannot be found!");
         }
     }
     
+    private static void addSword(String name){
+        swords.add(new ImagePattern(new Image(fileURL("./assets/images/" + name))));
+    }
     private static void addBackground(String name){
         Image backgroundImage = new Image(fileURL("./assets/images/" + name));
         Background background = new Background(new BackgroundImage(backgroundImage,
@@ -60,7 +59,9 @@ public class AssetManager {
         audio.add(clip);
     }
     
-    
+    public static ImagePattern getSword(int position){
+        return swords.get(position);
+    }
     
     public static Background getBackground(int position){
         return backgrounds.get(position);
