@@ -11,8 +11,8 @@ public class Player extends GameObject {
     private static ImagePattern swordState;
     private static boolean swordUsable;
 
-    public Player(Vector2D position, Vector2D velocity, Vector2D acceleration, double x, double y, double width, double height) {
-        super(x, y, width, height);
+    public Player(Vector2D position, Vector2D velocity, Vector2D acceleration, double width, double height) {
+        super(position.getX(), position.getY(), width, height);
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;

@@ -8,11 +8,9 @@ Left To Do:
 
 -Find Game Over Sound
 
--Space ship moves with mouse and shoots on left click
+-Space ship shoots on left click
 
 -Add collisions
-
--Aliens on a grid (8x4), move slowly left to right
 
 -Aliens randomly shoot downwards
 
