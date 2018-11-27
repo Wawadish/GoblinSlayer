@@ -14,6 +14,7 @@ public class GamePane extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
     private Player player;
+    private Projectile projectile;
     private double posX = 0;
     private double posY = 0;
     private Executor executor;
@@ -36,8 +37,11 @@ public class GamePane extends Pane {
         });
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
-
+            projectile = new Projectile(new Vector2D(posX, 720 / 2), new Vector2D(0,-20), 
+                    new Vector2D(0,0), 40, 80);
+            gc.fillRect(projectile.getX(), projectile.getY(), 60, 140);
         });
+        
         //Actions will be executed 60 times per second (60 FPS)
         loop();
     }
@@ -48,6 +52,9 @@ public class GamePane extends Pane {
         gc.clearRect(0, 0, 1280, 720);
         updatePlayer();
         updateEnemies();
+        if (projectile != null) {
+            updateProjectile(projectile);
+        }
         changeDirection = false;
     }
 
@@ -72,7 +79,12 @@ public class GamePane extends Pane {
                 gc.fillRect(e.getX(), e.getY(), e.getWidth(), e.getHeight());
             }
         }
-
+    }
+    
+    private void updateProjectile(Projectile projectile) {
+        double projectilePosY = projectile.getY();
+        projectile.setY(projectilePosY + projectile.getVelocity().getY());
+        gc.fillRect(projectile.getX(), projectile.getY(), 60, 140);
     }
 
     private void checkDirectionChange() {
