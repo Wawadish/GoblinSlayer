@@ -37,9 +37,11 @@ public class GamePane extends Pane {
         });
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
-            projectile = new Projectile(new Vector2D(posX, 720 / 2), new Vector2D(0,-20), 
-                    new Vector2D(0,0), 40, 80);
-            gc.fillRect(projectile.getX(), projectile.getY(), 60, 140);
+            projectile = new Projectile(new Vector2D(posX, player.getY() + player.getHeight()), new Vector2D(0,-20), 
+                    new Vector2D(0,0), 10, 10);
+            gc.setFill(Color.AQUAMARINE);
+            gc.fillRect(projectile.getX(), projectile.getY(), 
+                    projectile.getWidth(), projectile.getHeight());
         });
         
         //Actions will be executed 60 times per second (60 FPS)
@@ -60,7 +62,7 @@ public class GamePane extends Pane {
 
     private void updatePlayer() {
         gc.setFill(Color.BLUE);
-        gc.fillRect(posX, 700 - 140, player.getWidth(), player.getHeight());
+        gc.fillRect(posX, 700 - player.getHeight(), player.getWidth(), player.getHeight());
         //gc.drawImage(AssetManager.getSword(0).getImage(), posX, 650-140);
         player.setPosition(new Vector2D(posX, posY));
     }
@@ -82,9 +84,10 @@ public class GamePane extends Pane {
     }
     
     private void updateProjectile(Projectile projectile) {
+        gc.setFill(Color.AQUAMARINE);
         double projectilePosY = projectile.getY();
         projectile.setY(projectilePosY + projectile.getVelocity().getY());
-        gc.fillRect(projectile.getX(), projectile.getY(), 60, 140);
+        gc.fillRect(projectile.getX(), projectile.getY(), projectile.getWidth(), projectile.getHeight());
     }
 
     private void checkDirectionChange() {
