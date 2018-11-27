@@ -8,7 +8,6 @@ Left To Do:
 
 -Find Game Over Sound
 
--Space ship shoots on left click
 
 -Add collisions
 
