@@ -20,19 +20,32 @@ public class AssetManager {
     
     public static void preloadAllAssets(){
         try{
+            //0
             addBackground("Menu Background.png");
+            //1
             addBackground("Earth Cave Background.png");
+            //2
             addBackground("Ice Cave Background.png");
+            //3
             addBackground("Fire Cave Background.png");
             
+            
+            //0
             addSound("Menu.wav");
+            //1
             addSound("Playing.wav");
+            //2
             addSound("Projectile Fire.wav");
+            //3
             addSound("Goblin Death.wav");
+            //4
             addSound("Victory.wav");
             
+            //1
             addSword("original sword.png");
+            //2
             addSword("used sword.png");
+            
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error! Some files cannot be found!");
         }

@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -46,11 +45,13 @@ public class GamePane extends Pane {
         setOnMouseMoved(e -> {
             posX = e.getX();
         });
+        
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
             if (playerProjectiles.size() < allowedPlayerProjectiles) {
-                playerProjectiles.add(new Projectile(new Vector2D(posX + player.getWidth() * 0.25, player.getY() + player.getHeight()), new Vector2D(0, -20),
-                        new Vector2D(0, 0), player.getWidth() * 0.50, player.getHeight() * 0.50));
+                playerProjectiles.add(new Projectile(new Vector2D(posX + player.getWidth() * 0.25, player.getY() + player.getHeight()), 
+                        new Vector2D(0, -20), new Vector2D(0, 0), player.getWidth() * 0.50, player.getHeight() * 0.50));
+                AssetManager.getAudio(2).play();
             }
         });
 
@@ -117,7 +118,7 @@ public class GamePane extends Pane {
 
     private void checkDirectionChange() {
         for (Enemy e : enemies) {
-            if (e.getX() <= 1 || e.getX() >= 1279) {
+            if (e.getX() <= 1 || e.getX() + e.getWidth() >= 1279) {
                 changeDirection = true;
             }
         }
@@ -155,6 +156,7 @@ public class GamePane extends Pane {
                     enemies.remove(e);
                     projectileRemove.add(playerProjectiles.get(0));
                     playerProjectiles.remove(playerProjectiles.get(0));
+                    AssetManager.getAudio(3).play();
                     break;
                 }
             }
