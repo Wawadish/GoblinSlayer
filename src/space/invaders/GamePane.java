@@ -16,7 +16,6 @@ public class GamePane extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
     private Player player;
-    private Projectile projectile;
     private double posX = 0;
     private double posY = 0;
     private Executor executor;
@@ -27,12 +26,13 @@ public class GamePane extends Pane {
     private ArrayList<Projectile> playerProjectiles = new ArrayList<>();
     private ArrayList<Projectile> projectileRemove = new ArrayList<>();
     private Image currentPlayerImage;
+    
     //maximum amount of player projectiles at the same time, change for a "skill"
     private int allowedPlayerProjectiles = 1;
 
     public GamePane() {
-        //the player constructor is waaaay to complicated
-        player = new Player(new Vector2D(1280 / 2, 720 / 2), new Vector2D(1, 1), 60, 140);
+        //Fixed It
+        player = new Player(new Vector2D(1280 / 2, 720 / 2), 60, 140);
 
         enemies = new ArrayList<>();
         initializePane();
@@ -146,6 +146,20 @@ public class GamePane extends Pane {
         AssetManager.getAudio(1).play();
         setBackground(AssetManager.getBackground(1));
     }
+    
+    //TODO make it iterate for every projectile if powerup
+    public void playerProjectileCollison() {
+        for (Enemy e : enemies) {
+            if (!playerProjectiles.isEmpty()) {
+                if (playerProjectiles.get(0).collides(e)) {
+                    enemies.remove(e);
+                    projectileRemove.add(playerProjectiles.get(0));
+                    playerProjectiles.remove(playerProjectiles.get(0));
+                    break;
+                }
+            }
+        }
+    }
 
     private void loop() {
         executor.execute(new Runnable() {
@@ -164,6 +178,7 @@ public class GamePane extends Pane {
                             initialTime = currentTime;
                             firstIteration = true;
                             drawCanvas();
+                            playerProjectileCollison();
                         }
                     }
                 }

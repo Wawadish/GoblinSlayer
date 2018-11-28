@@ -5,15 +5,13 @@ import javafx.scene.image.Image;
 public class Player extends GameObject {
 
     private Vector2D position;
-    private Vector2D velocity;
 
     private static Image swordState;
     private static boolean swordUsable;
 
-    public Player(Vector2D position, Vector2D velocity, double width, double height) {
+    public Player(Vector2D position, double width, double height) {
         super(position.getX(), position.getY(), width, height);
         this.position = position;
-        this.velocity = velocity;
         swordState = AssetManager.getSword(0);
         swordUsable = true;
     }
@@ -39,16 +37,8 @@ public class Player extends GameObject {
         return position;
     }
 
-    public Vector2D getVelocity() {
-        return velocity;
-    }
-
     public void setPosition(Vector2D position) {
         this.position = position;
-    }
-
-    public void setVelocity(Vector2D velocity) {
-        this.velocity = velocity;
     }
     
     @Override

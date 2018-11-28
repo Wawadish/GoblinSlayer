@@ -32,7 +32,7 @@ public class Projectile extends GameObject {
 
     @Override
     boolean collides(GameObject gameObject1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.intersects(gameObject1.getBoundsInLocal());
     }
 
     @Override
