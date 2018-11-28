@@ -32,8 +32,7 @@ public class GamePane extends Pane {
 
     public GamePane() {
         //the player constructor is waaaay to complicated
-        player = new Player(new Vector2D(1280 / 2, 720 / 2), new Vector2D(1, 1),
-                new Vector2D(0, 0), 60, 140);
+        player = new Player(new Vector2D(1280 / 2, 720 / 2), new Vector2D(1, 1), 60, 140);
 
         enemies = new ArrayList<>();
         initializePane();
