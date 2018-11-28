@@ -1,6 +1,6 @@
 package space.invaders;
 
-import javafx.scene.paint.ImagePattern;
+import javafx.scene.image.Image;
 
 public class Player extends GameObject {
 
@@ -8,7 +8,7 @@ public class Player extends GameObject {
     private Vector2D velocity;
     private Vector2D acceleration;
 
-    private static ImagePattern swordState;
+    private static Image swordState;
     private static boolean swordUsable;
 
     public Player(Vector2D position, Vector2D velocity, Vector2D acceleration, double width, double height) {
@@ -33,7 +33,7 @@ public class Player extends GameObject {
         return swordUsable;
     }
 
-    public static ImagePattern getSwordState() {
+    public static Image getSwordState() {
         return swordState;
     }
 

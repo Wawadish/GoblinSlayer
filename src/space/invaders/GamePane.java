@@ -5,6 +5,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -21,6 +23,12 @@ public class GamePane extends Pane {
     private ArrayList<Enemy> enemies;
     private boolean firstIteration;
     private boolean changeDirection;
+    public static boolean paused = false;
+    private ArrayList<Projectile> playerProjectiles = new ArrayList<>();
+    private ArrayList<Projectile> projectileRemove = new ArrayList<>();
+    private Image currentPlayerImage;
+    //maximum amount of player projectiles at the same time, change for a "skill"
+    private int allowedPlayerProjectiles = 1;
 
     public GamePane() {
         //the player constructor is waaaay to complicated
@@ -31,19 +39,22 @@ public class GamePane extends Pane {
         initializePane();
         initializeEnemies();
 
+        //Pause game
+        setOnKeyPressed(e -> {
+
+        });
         //Player moves in relation to the mouse
         setOnMouseMoved(e -> {
             posX = e.getX();
         });
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
-            projectile = new Projectile(new Vector2D(posX, player.getY() + player.getHeight()), new Vector2D(0,-20), 
-                    new Vector2D(0,0), 10, 10);
-            gc.setFill(Color.AQUAMARINE);
-            gc.fillRect(projectile.getX(), projectile.getY(), 
-                    projectile.getWidth(), projectile.getHeight());
+            if (playerProjectiles.size() < allowedPlayerProjectiles) {
+                playerProjectiles.add(new Projectile(new Vector2D(posX + player.getWidth() * 0.25, player.getY() + player.getHeight()), new Vector2D(0, -20),
+                        new Vector2D(0, 0), player.getWidth() * 0.50, player.getHeight() * 0.50));
+            }
         });
-        
+
         //Actions will be executed 60 times per second (60 FPS)
         loop();
     }
@@ -54,16 +65,31 @@ public class GamePane extends Pane {
         gc.clearRect(0, 0, 1280, 720);
         updatePlayer();
         updateEnemies();
-        if (projectile != null) {
-            updateProjectile(projectile);
-        }
+        updatePlayerProjectiles();
+
         changeDirection = false;
     }
 
+    private void updatePlayerProjectiles() {
+
+        if (playerProjectiles.size() > 0) {
+            currentPlayerImage = AssetManager.getSword(1);
+            for (Projectile projectile : playerProjectiles) {
+                if (projectile.getY() + projectile.getHeight() <= 1) {
+                    projectileRemove.add(projectile);
+                } else {
+                    updateProjectile(projectile);
+                }
+            }
+        } else {
+            currentPlayerImage = AssetManager.getSword(0);
+        }
+        playerProjectiles.removeAll(projectileRemove);
+    }
+
     private void updatePlayer() {
-        gc.setFill(Color.BLUE);
-        gc.fillRect(posX, 700 - player.getHeight(), player.getWidth(), player.getHeight());
-        //gc.drawImage(AssetManager.getSword(0).getImage(), posX, 650-140);
+        posY = 700 - player.getHeight();
+        gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(), player.getHeight());
         player.setPosition(new Vector2D(posX, posY));
     }
 
@@ -82,12 +108,12 @@ public class GamePane extends Pane {
             }
         }
     }
-    
+
     private void updateProjectile(Projectile projectile) {
-        gc.setFill(Color.AQUAMARINE);
         double projectilePosY = projectile.getY();
         projectile.setY(projectilePosY + projectile.getVelocity().getY());
-        gc.fillRect(projectile.getX(), projectile.getY(), projectile.getWidth(), projectile.getHeight());
+        //50% of player height and width;
+        gc.drawImage(AssetManager.getSword(0), projectile.getX(), projectile.getY(), projectile.getWidth(), projectile.getHeight());
     }
 
     private void checkDirectionChange() {
@@ -131,13 +157,15 @@ public class GamePane extends Pane {
                 long currentTime;
                 long deltaTime;
                 while (game) {
-                    currentTime = System.nanoTime();
-                    deltaTime = (currentTime - initialTime) / 1000000;
-                    //Will update every 1/60 seconds (60 frames per second) and 16.6 = 1/60;
-                    if (deltaTime >= 16.6) {
-                        initialTime = currentTime;
-                        firstIteration = true;
-                        drawCanvas();
+                    if (!paused) {
+                        currentTime = System.nanoTime();
+                        deltaTime = (currentTime - initialTime) / 1000000;
+                        //Will update every 1/60 seconds (60 frames per second) and 16.6 = 1/60;
+                        if (deltaTime >= 16.6) {
+                            initialTime = currentTime;
+                            firstIteration = true;
+                            drawCanvas();
+                        }
                     }
                 }
             }

@@ -9,19 +9,14 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.media.AudioClip;
-import javafx.scene.paint.ImagePattern;
 import javax.swing.JOptionPane;
 
 public class AssetManager {
     
     private static ArrayList<Background> backgrounds = new ArrayList<>();
-    private static ArrayList<ImagePattern> goblins = new ArrayList<>();
+    private static ArrayList<Image> goblins = new ArrayList<>();
     private static ArrayList<AudioClip> audio = new ArrayList<>();
-    private static ArrayList<ImagePattern> swords = new ArrayList<>();
-    
-    private static String fileURL(String relativePath){
-        return new File(relativePath).toURI().toString();
-    }
+    private static ArrayList<Image> swords = new ArrayList<>();
     
     public static void preloadAllAssets(){
         try{
@@ -36,15 +31,19 @@ public class AssetManager {
             addSound("Goblin Death.wav");
             addSound("Victory.wav");
             
-            addSword("original sword");
-            addSword("used sword");
+            addSword("original sword.png");
+            addSword("used sword.png");
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error! Some files cannot be found!");
         }
     }
     
+    private static String fileURL(String relativePath){
+        return new File(relativePath).toURI().toString();
+    }
+    
     private static void addSword(String name){
-        swords.add(new ImagePattern(new Image(fileURL("./assets/images/" + name))));
+        swords.add(new Image(fileURL("./assets/images/" + name)));
     }
     private static void addBackground(String name){
         Image backgroundImage = new Image(fileURL("./assets/images/" + name));
@@ -59,7 +58,7 @@ public class AssetManager {
         audio.add(clip);
     }
     
-    public static ImagePattern getSword(int position){
+    public static Image getSword(int position){
         return swords.get(position);
     }
     
@@ -77,7 +76,7 @@ public class AssetManager {
         }
     }
     
-    public static ImagePattern getGoblinImage(int position){
+    public static Image getGoblinImage(int position){
         return goblins.get(position);
     }
 }
