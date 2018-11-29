@@ -17,6 +17,7 @@ public class AssetManager {
     private static ArrayList<Image> goblins = new ArrayList<>();
     private static ArrayList<AudioClip> audio = new ArrayList<>();
     private static ArrayList<Image> swords = new ArrayList<>();
+    private static ArrayList<Image> torches = new ArrayList<>();
     
     public static void preloadAllAssets(){
         try{
@@ -40,11 +41,16 @@ public class AssetManager {
             addSound("Goblin Death.wav");
             //4
             addSound("Victory.wav");
+            //5
+            addSound("Regret.wav");
             
             //1
             addSword("original sword.png");
             //2
             addSword("used sword.png");
+            
+            addTorch("torch left.gif");
+            addTorch("torch right.gif");
             
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error! Some files cannot be found!");
@@ -58,6 +64,11 @@ public class AssetManager {
     private static void addSword(String name){
         swords.add(new Image(fileURL("./assets/images/" + name)));
     }
+    
+    private static void addTorch(String name){
+        torches.add(new Image(fileURL("./assets/images/" + name)));
+    }
+    
     private static void addBackground(String name){
         Image backgroundImage = new Image(fileURL("./assets/images/" + name));
         Background background = new Background(new BackgroundImage(backgroundImage,
@@ -73,6 +84,10 @@ public class AssetManager {
     
     public static Image getSword(int position){
         return swords.get(position);
+    }
+    
+    public static Image getTorch(int position){
+        return torches.get(position);
     }
     
     public static Background getBackground(int position){

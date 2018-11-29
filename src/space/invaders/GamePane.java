@@ -6,8 +6,11 @@ import java.util.concurrent.Executors;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class GamePane extends Pane {
 
@@ -21,12 +24,13 @@ public class GamePane extends Pane {
     private ArrayList<Enemy> enemies;
     private boolean firstIteration;
     private boolean changeDirection;
-    public static boolean paused = false;
+    private boolean paused = false;
     private ArrayList<Projectile> playerProjectiles = new ArrayList<>();
     private ArrayList<Projectile> projectileRemove = new ArrayList<>();
     private Image currentPlayerImage;
 
-    //maximum amount of player projectiles at the same time, change for a "skill"
+    //maximum amount of player projectiles at the same time, 
+    //change for a "skill"
     private int allowedPlayerProjectiles = 1;
 
     public GamePane() {
@@ -49,12 +53,30 @@ public class GamePane extends Pane {
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
             if (playerProjectiles.size() < allowedPlayerProjectiles) {
-                playerProjectiles.add(new Projectile(new Vector2D(posX + player.getWidth() * 0.25, player.getY() + player.getHeight()),
-                        new Vector2D(0, -20), new Vector2D(0, 0), player.getWidth() * 0.50, player.getHeight() * 0.50));
+                playerProjectiles.add(new Projectile(new Vector2D(posX
+                        + player.getWidth() * 0.25, player.getY()
+                        + player.getHeight()), new Vector2D(0, -20),
+                        new Vector2D(0, 0), player.getWidth() * 0.50,
+                        player.getHeight() * 0.50));
+
                 AssetManager.getAudio(2).play();
             }
         });
 
+        setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.P) {
+                paused = !paused;
+                if (paused) {
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(0, 0, 1280, 720);
+                    gc.setFill(Color.WHITE);
+                    gc.setFont(new Font("Arial", 48));
+                    gc.setTextAlign(TextAlignment.CENTER);
+                    gc.fillText("Paused", 1280 / 2, 720 / 2);
+                }
+
+            }
+        });
         //Actions will be executed 60 times per second (60 FPS)
         loop();
     }
@@ -93,7 +115,8 @@ public class GamePane extends Pane {
     }
 
     private void updatePlayer() {
-        gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(), player.getHeight());
+        gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(),
+                player.getHeight());
         player.setPosition(new Vector2D(posX, posY));
     }
 
@@ -104,11 +127,18 @@ public class GamePane extends Pane {
                 double enemyPosX = e.getX();
                 double enemyPosY = e.getY();
                 if (changeDirection) {
-                    e.setVelocity(new Vector2D((-1) * e.getVelocity().getX(), e.getVelocity().getY()));
+                    e.setVelocity(new Vector2D((-1) * e.getVelocity().getX(),
+                            e.getVelocity().getY()));
                 }
-                e.setPosition(new Vector2D(enemyPosX + e.getVelocity().getX(), e.getY()));
+                e.setPosition(new Vector2D(enemyPosX + e.getVelocity().getX(),
+                        e.getY()));
                 gc.fillRect(e.getX(), e.getY(), e.getWidth(), e.getHeight());
             }
+        } else {
+            AssetManager.stopAllSound();
+            AssetManager.getAudio(4).play();
+            game = false;
+            displayMessage("Victory!!");
         }
     }
 
@@ -116,7 +146,9 @@ public class GamePane extends Pane {
         double projectilePosY = projectile.getY();
         projectile.setY(projectilePosY + projectile.getVelocity().getY());
         //50% of player height and width;
-        gc.drawImage(AssetManager.getSword(0), projectile.getX(), projectile.getY(), projectile.getWidth(), projectile.getHeight());
+        gc.drawImage(AssetManager.getSword(0), projectile.getX(),
+                projectile.getY(), projectile.getWidth(),
+                projectile.getHeight());
     }
 
     private void checkDirectionChange() {
@@ -166,18 +198,38 @@ public class GamePane extends Pane {
             }
         }
     }
-    
-    
+
     //Not perfect but working on it
     public void enemyPlayerCollison() {
-        if(!enemies.isEmpty()) {
-            for (Enemy e: enemies) {
-                if(player.collides(e)) {
+        if (!enemies.isEmpty()) {
+            for (Enemy e : enemies) {
+                if (player.collides(e)) {
+                    AssetManager.stopAllSound();
+                    displayMessage("Game Over!");
+                    AssetManager.getAudio(5).play();
                     game = false;
                     System.out.println(e.toString());
                 }
             }
         }
+    }
+
+    private void displayMessage(String message) {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, 1280, 720);
+        gc.setFill(Color.WHITE);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFont(new Font("Arial", 48));
+        gc.fillText(message, 1280 / 2, 720 / 2);
+        gc.setFont(new Font("Arial", 24));
+        gc.fillText("Press \"ENTER\" to return to the menu!",
+                1280 / 2, 720 / 2 + 100);
+
+        this.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                GoblinSlayer.changePane(new MenuPane());
+            }
+        });
     }
 
     private void loop() {
@@ -192,7 +244,8 @@ public class GamePane extends Pane {
                     if (!paused) {
                         currentTime = System.nanoTime();
                         deltaTime = (currentTime - initialTime) / 1000000;
-                        //Will update every 1/60 seconds (60 frames per second) and 16.6 = 1/60;
+                        //Will update every 1/60 seconds (60 frames per second) 
+                        //and 16.6 = 1/60;
                         if (deltaTime >= 16.6) {
                             initialTime = currentTime;
                             firstIteration = true;

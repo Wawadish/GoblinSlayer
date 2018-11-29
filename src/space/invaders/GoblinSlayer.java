@@ -23,12 +23,6 @@ public class GoblinSlayer extends Application {
         scene = new Scene(menu, 1280, 720);
         
         //the value of paused is not being printed.
-        scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.P) {
-                GamePane.paused = !GamePane.paused;
-                System.out.println(GamePane.paused);
-            }
-        });
         
         window.setTitle("Goblin Slayer");
         window.setScene(scene);
@@ -47,5 +41,6 @@ public class GoblinSlayer extends Application {
     public static void changePane(Pane p){
         scene = new Scene(p, 1280, 720);
         window.setScene(scene);
+        p.requestFocus();
     }
 }
