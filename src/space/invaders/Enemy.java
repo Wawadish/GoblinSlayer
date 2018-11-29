@@ -13,13 +13,11 @@ public class Enemy extends GameObject{
     
     private Vector2D position;
     private Vector2D velocity;
-    private Vector2D acceleration;
 
-    public Enemy(Vector2D position, Vector2D velocity, Vector2D acceleration, double width, double height) {
+    public Enemy(Vector2D position, Vector2D velocity, double width, double height) {
         super(position.getX(), position.getY(), width, height);
         this.position = position;
         this.velocity = velocity;
-        this.acceleration = acceleration;
     }
 
     public Vector2D getVelocity() {
@@ -29,10 +27,20 @@ public class Enemy extends GameObject{
     public void setVelocity(Vector2D velocity) {
         this.velocity = velocity;
     }
+
+    public void setPosition(Vector2D position) {
+        this.position = position;
+        this.setX(position.getX());
+        this.setY(position.getY());
+    }
+
+    public Vector2D getPosition() {
+        return position;
+    }
     
     @Override
     boolean collides(GameObject gameObject1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.intersects(gameObject1.getBoundsInLocal());
     }
 
     @Override

@@ -16,7 +16,7 @@ public class GamePane extends Pane {
     private GraphicsContext gc;
     private Player player;
     private double posX = 0;
-    private double posY = 0;
+    final private double posY = 700 - 140;
     private Executor executor;
     private ArrayList<Enemy> enemies;
     private boolean firstIteration;
@@ -25,13 +25,13 @@ public class GamePane extends Pane {
     private ArrayList<Projectile> playerProjectiles = new ArrayList<>();
     private ArrayList<Projectile> projectileRemove = new ArrayList<>();
     private Image currentPlayerImage;
-    
+
     //maximum amount of player projectiles at the same time, change for a "skill"
     private int allowedPlayerProjectiles = 1;
 
     public GamePane() {
         //Fixed It
-        player = new Player(new Vector2D(1280 / 2, 720 / 2), 60, 140);
+        player = new Player(new Vector2D(posX, posY), 60, 140);
 
         enemies = new ArrayList<>();
         initializePane();
@@ -45,11 +45,11 @@ public class GamePane extends Pane {
         setOnMouseMoved(e -> {
             posX = e.getX();
         });
-        
+
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
             if (playerProjectiles.size() < allowedPlayerProjectiles) {
-                playerProjectiles.add(new Projectile(new Vector2D(posX + player.getWidth() * 0.25, player.getY() + player.getHeight()), 
+                playerProjectiles.add(new Projectile(new Vector2D(posX + player.getWidth() * 0.25, player.getY() + player.getHeight()),
                         new Vector2D(0, -20), new Vector2D(0, 0), player.getWidth() * 0.50, player.getHeight() * 0.50));
                 AssetManager.getAudio(2).play();
             }
@@ -70,9 +70,14 @@ public class GamePane extends Pane {
         changeDirection = false;
     }
 
-    private void updatePlayerProjectiles() {
+    private void moveEnemiesDown() {
+        enemies.forEach((e) -> {
+            e.setY(e.getY() + 10);
+        });
+    }
 
-        if (playerProjectiles.size() > 0) {
+    private void updatePlayerProjectiles() {
+        if (!playerProjectiles.isEmpty()) {
             currentPlayerImage = AssetManager.getSword(1);
             for (Projectile projectile : playerProjectiles) {
                 if (projectile.getY() + projectile.getHeight() <= 1) {
@@ -88,7 +93,6 @@ public class GamePane extends Pane {
     }
 
     private void updatePlayer() {
-        posY = 700 - player.getHeight();
         gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(), player.getHeight());
         player.setPosition(new Vector2D(posX, posY));
     }
@@ -102,8 +106,7 @@ public class GamePane extends Pane {
                 if (changeDirection) {
                     e.setVelocity(new Vector2D((-1) * e.getVelocity().getX(), e.getVelocity().getY()));
                 }
-                e.setX(enemyPosX + e.getVelocity().getX());
-                e.setY(enemyPosY + e.getVelocity().getY());
+                e.setPosition(new Vector2D(enemyPosX + e.getVelocity().getX(), e.getY()));
                 gc.fillRect(e.getX(), e.getY(), e.getWidth(), e.getHeight());
             }
         }
@@ -120,6 +123,7 @@ public class GamePane extends Pane {
         for (Enemy e : enemies) {
             if (e.getX() <= 1 || e.getX() + e.getWidth() >= 1279) {
                 changeDirection = true;
+                moveEnemiesDown();
             }
         }
     }
@@ -133,7 +137,7 @@ public class GamePane extends Pane {
             for (int j = 0; j < 8; j++) {
                 enemyPosX += 120;
                 enemies.add(new Enemy(new Vector2D(enemyPosX, enemyPosY),
-                        new Vector2D(1, 0), new Vector2D(1, 1), 40, 40));
+                        new Vector2D(3, 0), 40, 40));
             }
         }
     }
@@ -147,17 +151,30 @@ public class GamePane extends Pane {
         AssetManager.getAudio(1).play();
         setBackground(AssetManager.getBackground(1));
     }
-    
+
     //TODO make it iterate for every projectile if powerup
     public void playerProjectileCollison() {
-        for (Enemy e : enemies) {
-            if (!playerProjectiles.isEmpty()) {
+        if (!playerProjectiles.isEmpty()) {
+            for (Enemy e : enemies) {
                 if (playerProjectiles.get(0).collides(e)) {
                     enemies.remove(e);
                     projectileRemove.add(playerProjectiles.get(0));
                     playerProjectiles.remove(playerProjectiles.get(0));
                     AssetManager.getAudio(3).play();
                     break;
+                }
+            }
+        }
+    }
+    
+    
+    //Not perfect but working on it
+    public void enemyPlayerCollison() {
+        if(!enemies.isEmpty()) {
+            for (Enemy e: enemies) {
+                if(player.collides(e)) {
+                    game = false;
+                    System.out.println(e.toString());
                 }
             }
         }
@@ -181,6 +198,7 @@ public class GamePane extends Pane {
                             firstIteration = true;
                             drawCanvas();
                             playerProjectileCollison();
+                            enemyPlayerCollison();
                         }
                     }
                 }

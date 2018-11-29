@@ -39,11 +39,13 @@ public class Player extends GameObject {
 
     public void setPosition(Vector2D position) {
         this.position = position;
+        this.x = position.getX();
+        this.y = position.getY();
     }
     
     @Override
     boolean collides(GameObject gameObject1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.intersects(gameObject1.getBoundsInLocal());
     }
 
     @Override
