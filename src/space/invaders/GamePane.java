@@ -27,6 +27,7 @@ public class GamePane extends Pane {
     private boolean paused = false;
     private ArrayList<Projectile> playerProjectiles = new ArrayList<>();
     private ArrayList<Projectile> projectileRemove = new ArrayList<>();
+    private ArrayList<Projectile> enemyProjectiles = new ArrayList<>();
     private Image currentPlayerImage;
 
     //maximum amount of player projectiles at the same time, 
@@ -34,6 +35,10 @@ public class GamePane extends Pane {
     private int allowedPlayerProjectiles = 1;
 
     public GamePane() {
+        //Player moves in relation to the mouse
+        setOnMouseMoved(e -> {
+            posX = e.getX();
+        });
         //Fixed It
         player = new Player(new Vector2D(posX, posY), 60, 140);
 
@@ -45,10 +50,7 @@ public class GamePane extends Pane {
         setOnKeyPressed(e -> {
 
         });
-        //Player moves in relation to the mouse
-        setOnMouseMoved(e -> {
-            posX = e.getX();
-        });
+        
 
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
@@ -85,6 +87,8 @@ public class GamePane extends Pane {
         //change direction keeps the enemies aligned.
         checkDirectionChange();
         gc.clearRect(0, 0, 1280, 720);
+        addEnemyProjectiles();
+        updateEnemyProjectiles();
         updatePlayer();
         updateEnemies();
         updatePlayerProjectiles();
@@ -112,6 +116,33 @@ public class GamePane extends Pane {
             currentPlayerImage = AssetManager.getSword(0);
         }
         playerProjectiles.removeAll(projectileRemove);
+        projectileRemove.clear();
+    }
+
+    private void addEnemyProjectiles() {
+        for (Enemy e : enemies) {
+            int random = (int) (Math.random() * 5000 + 1);
+            if (random == 5) {
+                enemyProjectiles.add(new Projectile(new Vector2D(e.getX(), e.getY()),
+                        new Vector2D(0, 4), new Vector2D(0, 0), 30, 30));
+            }
+        }
+
+    }
+
+    private void updateEnemyProjectiles() {
+        if (!enemyProjectiles.isEmpty()) {
+            for (Projectile projectile : enemyProjectiles) {
+                if (projectile.getY() + projectile.getHeight() >= 719) {
+                    projectileRemove.add(projectile);
+                } else {
+                    System.out.println(projectile.getY());
+                    updateProjectile(projectile);
+                }
+            }
+        }
+        enemyProjectiles.removeAll(projectileRemove);
+        projectileRemove.clear();
     }
 
     private void updatePlayer() {
