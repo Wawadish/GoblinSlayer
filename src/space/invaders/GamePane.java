@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -29,6 +30,8 @@ public class GamePane extends Pane {
     private ArrayList<Projectile> projectileRemove = new ArrayList<>();
     private ArrayList<Projectile> enemyProjectiles = new ArrayList<>();
     private Image currentPlayerImage;
+    private int score = 0;
+    private int hP = 3;
 
     //maximum amount of player projectiles at the same time, 
     //change for a "skill"
@@ -40,8 +43,8 @@ public class GamePane extends Pane {
             posX = e.getX();
         });
         //Fixed It
-        player = new Player(new Vector2D(posX, posY), 60, 140);
-
+        player = new Player(new Vector2D(posX + 20, posY), 60, 140);
+        
         enemies = new ArrayList<>();
         initializePane();
         initializeEnemies();
@@ -50,10 +53,10 @@ public class GamePane extends Pane {
         setOnMouseClicked(e -> {
             if (playerProjectiles.size() < allowedPlayerProjectiles) {
                 playerProjectiles.add(new Projectile(new Vector2D(posX
-                        + player.getWidth() * 0.25, player.getY()
-                        + player.getHeight()), new Vector2D(0, -20),
-                        new Vector2D(0, 0), player.getWidth() * 0.50,
-                        player.getHeight() * 0.50));
+                        + 60 * 0.25, player.getY()
+                        + 140), new Vector2D(0, -20),
+                        new Vector2D(0, 0), 60 * 0.50,
+                        140 * 0.50));
 
                 AssetManager.getAudio(2).play();
             }
@@ -81,6 +84,7 @@ public class GamePane extends Pane {
         //change direction keeps the enemies aligned.
         checkDirectionChange();
         gc.clearRect(0, 0, 1280, 720);
+        displayScore();
         addEnemyProjectiles();
         updateEnemyProjectiles();
         updatePlayer();
@@ -138,12 +142,12 @@ public class GamePane extends Pane {
 
     private void updatePlayer() {
         player.setWidth(60);
-        gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(), player.getHeight());
+        gc.drawImage(currentPlayerImage, posX, posY, 60, 140);
         player.setPosition(new Vector2D(posX, posY));
     }
 
     private void updateEnemies() {
-        if (enemies.size() != 0) {
+        if (!enemies.isEmpty()) {
             gc.setFill(Color.RED);
             for (Enemy e : enemies) {
                 double enemyPosX = e.getX();
@@ -201,6 +205,7 @@ public class GamePane extends Pane {
         canvas = new Canvas(1280, 720);
         gc = canvas.getGraphicsContext2D();
         getChildren().add(canvas);
+        displayScore();
         AssetManager.stopAllSound();
         AssetManager.getAudio(1).play();
         setBackground(AssetManager.getBackground(1));
@@ -215,6 +220,8 @@ public class GamePane extends Pane {
                     projectileRemove.add(playerProjectiles.get(0));
                     playerProjectiles.remove(playerProjectiles.get(0));
                     AssetManager.getAudio(3).play();
+                    score += 10;
+                    displayScore();
                     break;
                 }
             }
@@ -225,8 +232,9 @@ public class GamePane extends Pane {
         if (!enemyProjectiles.isEmpty()) {
             for (Projectile p : enemyProjectiles) {
                 if (player.collides(p)) {
-                    game = false;
-                    System.out.println("Collision");
+                    projectileRemove.add(p);
+                    enemyProjectiles.remove(p);
+                    break;
                 }
             }
         }
@@ -262,6 +270,12 @@ public class GamePane extends Pane {
                 GoblinSlayer.changePane(new MenuPane());
             }
         });
+    }
+    
+    private void displayScore() {
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("Arial", 24));
+        gc.fillText("SCORE: " + score, 1100, 30);     
     }
 
     private void loop() {
