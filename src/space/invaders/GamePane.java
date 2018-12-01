@@ -121,7 +121,7 @@ public class GamePane extends Pane {
 
     private void addEnemyProjectiles() {
         for (Enemy e : enemies) {
-            int random = (int) (Math.random() * 5000 + 1);
+            int random = (int) (Math.random() * 750 + 1);
             if (random == 5) {
                 enemyProjectiles.add(new Projectile(new Vector2D(e.getX(), e.getY()),
                         new Vector2D(0, 4), new Vector2D(0, 0), 30, 30));
@@ -136,7 +136,6 @@ public class GamePane extends Pane {
                 if (projectile.getY() + projectile.getHeight() >= 719) {
                     projectileRemove.add(projectile);
                 } else {
-                    System.out.println(projectile.getY());
                     updateProjectile(projectile);
                 }
             }
@@ -200,7 +199,7 @@ public class GamePane extends Pane {
             for (int j = 0; j < 8; j++) {
                 enemyPosX += 120;
                 enemies.add(new Enemy(new Vector2D(enemyPosX, enemyPosY),
-                        new Vector2D(3, 0), 40, 40));
+                        new Vector2D(1, 0), 40, 40));
             }
         }
     }
@@ -239,7 +238,6 @@ public class GamePane extends Pane {
                     displayMessage("Game Over!");
                     AssetManager.getAudio(5).play();
                     game = false;
-                    System.out.println(e.toString());
                 }
             }
         }

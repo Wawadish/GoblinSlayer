@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
@@ -15,27 +17,36 @@ public class MenuPane extends Pane {
 
         setBackground(AssetManager.getBackground(0));
 
+        ImageView[] buttonArray = new ImageView[4];
+        for (int i = 0; i < buttonArray.length; i++) {
+            buttonArray[i] = new ImageView(AssetManager.getImage(i));
+        }
+        
+        //Play Button
         Button playButton = new Button();
-        playButton.setText("Play");
         playButton.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent event) {
                 GoblinSlayer.changePane(new GamePane());
             }
         });
-        playButton.setPrefSize(280, 85);
         playButton.setLayoutX(1280 / 2 - 140);
         playButton.setLayoutY(720 / 2 - 85 / 2);
+        playButton.setBackground(Background.EMPTY);
+        playButton.setGraphic(buttonArray[0]);
+        
+        playButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            playButton.setGraphic(buttonArray[1]);
+        });
 
+        playButton.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            playButton.setGraphic(buttonArray[0]);
+        });
+        
+        //Option Button
         Button optionButton = new Button();
-        optionButton.setText("Options");
-        optionButton.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("OPTIONS");
-            }
+        optionButton.setOnAction((ActionEvent event) -> {
+            //TODO: switch to option Pane
         });
         double r = 65;
         optionButton.setShape(new Circle(r));
@@ -43,19 +54,17 @@ public class MenuPane extends Pane {
         optionButton.setMaxSize(2 * r, 2 * r);
         optionButton.setLayoutX(1280 / 2 - r);
         optionButton.setLayoutY(720 / 2 + 100);
+        optionButton.setBackground(Background.EMPTY);
+        optionButton.setGraphic(buttonArray[3]);
         
-        /* not working even after addin in getChildren
-        ImageView view1 = new ImageView(AssetManager.getTorch(0));
-        view1.setLayoutX(0);
-        view1.setLayoutY(720);
+        optionButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
+            optionButton.setGraphic(buttonArray[2]);
+        });
 
-        ImageView view2 = new ImageView();
-        view2.setImage(AssetManager.getTorch(1));
-        view2.setLayoutX(1280 - view2.getImage().getWidth());
-        view2.setLayoutY(720);
-        view2.setVisible(true);
-        */
-
+        optionButton.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
+            optionButton.setGraphic(buttonArray[3]);
+        });
+        
         getChildren().addAll(playButton, optionButton);
 
         AssetManager.getAudio(0).play();
