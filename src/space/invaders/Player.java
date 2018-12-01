@@ -9,7 +9,7 @@ public class Player extends GameObject {
     private static Image swordState;
     private static boolean swordUsable;
 
-    public Player(Vector2D position, double width, double height) {
+    public Player(Vector2D position, final double width, double height) {
         super(position.getX(), position.getY(), width, height);
         this.position = position;
         swordState = AssetManager.getSword(0);
@@ -39,8 +39,8 @@ public class Player extends GameObject {
 
     public void setPosition(Vector2D position) {
         this.position = position;
-        this.x = position.getX();
-        this.y = position.getY();
+        this.setX(position.getX());
+        this.setY(position.getY());
     }
     
     @Override

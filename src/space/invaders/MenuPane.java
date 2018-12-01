@@ -1,7 +1,6 @@
 package space.invaders;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,11 +23,8 @@ public class MenuPane extends Pane {
         
         //Play Button
         Button playButton = new Button();
-        playButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                GoblinSlayer.changePane(new GamePane());
-            }
+        playButton.setOnAction((ActionEvent event) -> {
+            GoblinSlayer.changePane(new GamePane());
         });
         playButton.setLayoutX(1280 / 2 - 140);
         playButton.setLayoutY(720 / 2 - 85 / 2);

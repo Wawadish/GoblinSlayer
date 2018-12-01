@@ -46,12 +46,6 @@ public class GamePane extends Pane {
         initializePane();
         initializeEnemies();
 
-        //Pause game
-        setOnKeyPressed(e -> {
-
-        });
-        
-
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
             if (playerProjectiles.size() < allowedPlayerProjectiles) {
@@ -127,7 +121,6 @@ public class GamePane extends Pane {
                         new Vector2D(0, 4), new Vector2D(0, 0), 30, 30));
             }
         }
-
     }
 
     private void updateEnemyProjectiles() {
@@ -141,12 +134,11 @@ public class GamePane extends Pane {
             }
         }
         enemyProjectiles.removeAll(projectileRemove);
-        projectileRemove.clear();
     }
 
     private void updatePlayer() {
-        gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(),
-                player.getHeight());
+        player.setWidth(60);
+        gc.drawImage(currentPlayerImage, posX, posY, player.getWidth(), player.getHeight());
         player.setPosition(new Vector2D(posX, posY));
     }
 
@@ -199,7 +191,7 @@ public class GamePane extends Pane {
             for (int j = 0; j < 8; j++) {
                 enemyPosX += 120;
                 enemies.add(new Enemy(new Vector2D(enemyPosX, enemyPosY),
-                        new Vector2D(1, 0), 40, 40));
+                        new Vector2D(3, 0), 40, 40));
             }
         }
     }
@@ -224,6 +216,17 @@ public class GamePane extends Pane {
                     playerProjectiles.remove(playerProjectiles.get(0));
                     AssetManager.getAudio(3).play();
                     break;
+                }
+            }
+        }
+    }
+
+    public void enemyProjectileCollision() {
+        if (!enemyProjectiles.isEmpty()) {
+            for (Projectile p : enemyProjectiles) {
+                if (player.collides(p)) {
+                    game = false;
+                    System.out.println("Collision");
                 }
             }
         }
@@ -280,6 +283,7 @@ public class GamePane extends Pane {
                             firstIteration = true;
                             drawCanvas();
                             playerProjectileCollison();
+                            enemyProjectileCollision();
                             enemyPlayerCollison();
                         }
                     }

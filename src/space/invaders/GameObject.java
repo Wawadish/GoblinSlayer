@@ -12,11 +12,6 @@ import javafx.scene.shape.Rectangle;
  * @author Sam
  */
 public abstract class GameObject extends Rectangle {
-    
-    protected double x;
-    protected double y;
-    protected double width;
-    protected double height;
 
     public GameObject(double x, double y, double width, double height) {
         super(x, y, width, height);
