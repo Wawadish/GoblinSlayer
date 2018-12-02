@@ -2,11 +2,11 @@ package space.invaders;
 
 import java.util.ArrayList;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -34,7 +34,7 @@ public class GamePane extends Pane {
     private int score = 0;
     private int playerLives = 3;
     private boolean rightDirection = true;
-    private int animationCorrection = 0;
+    private Timer timer = new Timer();
 
     //maximum amount of player projectiles at the same time, 
     //change for a "skill"
@@ -60,7 +60,7 @@ public class GamePane extends Pane {
                         + 140), new Vector2D(0, -20),
                         new Vector2D(0, 0), 60 * 0.50,
                         140 * 0.50));
-                if (game) {
+                if (game && !paused) {
                     AssetManager.getAudio(2).play();
                 }
             }
@@ -69,17 +69,18 @@ public class GamePane extends Pane {
         setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.P) {
                 paused = !paused;
-                if (paused) {
-                    gc.setFill(Color.BLACK);
-                    gc.fillRect(0, 0, 1280, 720);
-                    gc.setFill(Color.WHITE);
-                    gc.setFont(new Font("Arial", 48));
-                    gc.setTextAlign(TextAlignment.CENTER);
-                    gc.fillText("Paused", 1280 / 2, 720 / 2);
-                }
-
             }
         });
+        //Change the long to make the animation slower/faster
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                iteration++;
+                if (iteration > 7) {
+                    iteration = 0;
+                }
+            }
+        }, 0, (long) 160);
         //Actions will be executed 60 times per second (60 FPS)
         loop();
     }
@@ -153,11 +154,6 @@ public class GamePane extends Pane {
 
     private void updateEnemies() {
         if (!enemies.isEmpty()) {
-            
-            iteration++;
-            if (iteration > 7) {
-                iteration = 0;
-            }
 
             for (Enemy e : enemies) {
                 double enemyPosX = e.getX();
