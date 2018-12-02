@@ -16,6 +16,7 @@ public class GoblinSlayer extends Application {
     @Override
     public void start(Stage primaryStage) {
         window = primaryStage;
+        window.setResizable(false);
         
         AssetManager.preloadAllAssets();
         MenuPane menu = new MenuPane();
@@ -25,12 +26,15 @@ public class GoblinSlayer extends Application {
         //the value of paused is not being printed.
         
         window.setTitle("Goblin Slayer");
+        
         window.setScene(scene);
+        window.sizeToScene();
         
         window.setOnCloseRequest(e ->{
             Platform.exit();
             System.exit(0);
         });
+        
         window.show(); 
     }
 
