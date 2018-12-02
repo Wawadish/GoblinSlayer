@@ -1,6 +1,7 @@
 package space.invaders;
 
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javafx.scene.canvas.Canvas;
@@ -23,7 +24,7 @@ public class GamePane extends Pane {
     final private double posY = 700 - 140;
     private Executor executor;
     private ArrayList<Enemy> enemies;
-    private boolean firstIteration;
+    private int iteration = 0;
     private boolean changeDirection;
     private boolean paused = false;
     private ArrayList<Projectile> playerProjectiles = new ArrayList<>();
@@ -31,7 +32,9 @@ public class GamePane extends Pane {
     private ArrayList<Projectile> enemyProjectiles = new ArrayList<>();
     private Image currentPlayerImage;
     private int score = 0;
-    private int hP = 3;
+    private int playerLives = 3;
+    private boolean rightDirection = true;
+    private int animationCorrection = 0;
 
     //maximum amount of player projectiles at the same time, 
     //change for a "skill"
@@ -44,7 +47,7 @@ public class GamePane extends Pane {
         });
         //Fixed It
         player = new Player(new Vector2D(posX + 20, posY), 60, 140);
-        
+
         enemies = new ArrayList<>();
         initializePane();
         initializeEnemies();
@@ -57,8 +60,9 @@ public class GamePane extends Pane {
                         + 140), new Vector2D(0, -20),
                         new Vector2D(0, 0), 60 * 0.50,
                         140 * 0.50));
-
-                AssetManager.getAudio(2).play();
+                if (game) {
+                    AssetManager.getAudio(2).play();
+                }
             }
         });
 
@@ -85,6 +89,7 @@ public class GamePane extends Pane {
         checkDirectionChange();
         gc.clearRect(0, 0, 1280, 720);
         displayScore();
+        displayLives();
         addEnemyProjectiles();
         updateEnemyProjectiles();
         updatePlayer();
@@ -107,7 +112,7 @@ public class GamePane extends Pane {
                 if (projectile.getY() + projectile.getHeight() <= 1) {
                     projectileRemove.add(projectile);
                 } else {
-                    updateProjectile(projectile);
+                    updateProjectile(projectile, true);
                 }
             }
         } else {
@@ -119,10 +124,10 @@ public class GamePane extends Pane {
 
     private void addEnemyProjectiles() {
         for (Enemy e : enemies) {
-            int random = (int) (Math.random() * 750 + 1);
+            int random = (int) (Math.random() * 1250 + 1);
             if (random == 5) {
                 enemyProjectiles.add(new Projectile(new Vector2D(e.getX(), e.getY()),
-                        new Vector2D(0, 4), new Vector2D(0, 0), 30, 30));
+                        new Vector2D(0, 4), new Vector2D(0, 0), 10, 18));
             }
         }
     }
@@ -133,7 +138,7 @@ public class GamePane extends Pane {
                 if (projectile.getY() + projectile.getHeight() >= 719) {
                     projectileRemove.add(projectile);
                 } else {
-                    updateProjectile(projectile);
+                    updateProjectile(projectile, false);
                 }
             }
         }
@@ -148,7 +153,12 @@ public class GamePane extends Pane {
 
     private void updateEnemies() {
         if (!enemies.isEmpty()) {
-            gc.setFill(Color.RED);
+            
+            iteration++;
+            if (iteration > 7) {
+                iteration = 0;
+            }
+
             for (Enemy e : enemies) {
                 double enemyPosX = e.getX();
                 double enemyPosY = e.getY();
@@ -158,7 +168,11 @@ public class GamePane extends Pane {
                 }
                 e.setPosition(new Vector2D(enemyPosX + e.getVelocity().getX(),
                         e.getY()));
-                gc.fillRect(e.getX(), e.getY(), e.getWidth(), e.getHeight());
+                if (rightDirection) {
+                    gc.drawImage(AssetManager.getGoblinsRight(iteration), e.getX(), e.getY(), e.getWidth(), e.getHeight());
+                } else {
+                    gc.drawImage(AssetManager.getGoblinsLeft(iteration), e.getX(), e.getY(), e.getWidth(), e.getHeight());
+                }
             }
         } else {
             AssetManager.stopAllSound();
@@ -168,13 +182,19 @@ public class GamePane extends Pane {
         }
     }
 
-    private void updateProjectile(Projectile projectile) {
+    private void updateProjectile(Projectile projectile, boolean player) {
         double projectilePosY = projectile.getY();
         projectile.setY(projectilePosY + projectile.getVelocity().getY());
         //50% of player height and width;
-        gc.drawImage(AssetManager.getSword(0), projectile.getX(),
-                projectile.getY(), projectile.getWidth(),
-                projectile.getHeight());
+        if (player) {
+            gc.drawImage(AssetManager.getSword(0), projectile.getX(),
+                    projectile.getY(), projectile.getWidth(),
+                    projectile.getHeight());
+        } else {
+            gc.drawImage(AssetManager.getSword(2), projectile.getX(),
+                    projectile.getY(), projectile.getWidth(),
+                    projectile.getHeight());
+        }
     }
 
     private void checkDirectionChange() {
@@ -183,6 +203,9 @@ public class GamePane extends Pane {
                 changeDirection = true;
                 moveEnemiesDown();
             }
+        }
+        if (changeDirection) {
+            rightDirection = !rightDirection;
         }
     }
 
@@ -234,6 +257,10 @@ public class GamePane extends Pane {
                 if (player.collides(p)) {
                     projectileRemove.add(p);
                     enemyProjectiles.remove(p);
+                    playerLives--;
+                    if (playerLives == 0) {
+                        gameOver();
+                    }
                     break;
                 }
             }
@@ -245,13 +272,17 @@ public class GamePane extends Pane {
         if (!enemies.isEmpty()) {
             for (Enemy e : enemies) {
                 if (player.collides(e)) {
-                    AssetManager.stopAllSound();
-                    displayMessage("Game Over!");
-                    AssetManager.getAudio(5).play();
-                    game = false;
+                    gameOver();
                 }
             }
         }
+    }
+
+    public void gameOver() {
+        AssetManager.stopAllSound();
+        displayMessage("Game Over!");
+        AssetManager.getAudio(5).play();
+        game = false;
     }
 
     private void displayMessage(String message) {
@@ -271,11 +302,17 @@ public class GamePane extends Pane {
             }
         });
     }
-    
+
     private void displayScore() {
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Arial", 24));
-        gc.fillText("SCORE: " + score, 1100, 30);     
+        gc.fillText("SCORE: " + score, 1100, 30);
+    }
+
+    private void displayLives() {
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("Arial", 24));
+        gc.fillText("LIVES: " + playerLives, 50, 30);
     }
 
     private void loop() {
@@ -294,7 +331,6 @@ public class GamePane extends Pane {
                         //and 16.6 = 1/60;
                         if (deltaTime >= 16.6) {
                             initialTime = currentTime;
-                            firstIteration = true;
                             drawCanvas();
                             playerProjectileCollison();
                             enemyProjectileCollision();

@@ -14,7 +14,8 @@ import javax.swing.JOptionPane;
 public class AssetManager {
     
     private static ArrayList<Background> backgrounds = new ArrayList<>();
-    private static ArrayList<Image> goblins = new ArrayList<>();
+    private static ArrayList<Image> goblinsLeft = new ArrayList<>();
+    private static ArrayList<Image> goblinsRight = new ArrayList<>();
     private static ArrayList<AudioClip> audio = new ArrayList<>();
     private static ArrayList<Image> swords = new ArrayList<>();
     private static ArrayList<Image> images = new ArrayList<>();
@@ -54,10 +55,30 @@ public class AssetManager {
             //5
             addSound("Regret.wav");
             
-            //1
+            //0
             addSword("original sword.png");
-            //2
+            //1
             addSword("used sword.png");
+            //2
+            addSword("goblin sword.png");
+            
+            addGoblinDirection("/walking left/00.png", goblinsLeft);
+            addGoblinDirection("/walking left/01.png", goblinsLeft);
+            addGoblinDirection("/walking left/02.png", goblinsLeft);
+            addGoblinDirection("/walking left/03.png", goblinsLeft);
+            addGoblinDirection("/walking left/04.png", goblinsLeft);
+            addGoblinDirection("/walking left/05.png", goblinsLeft);
+            addGoblinDirection("/walking left/06.png", goblinsLeft);
+            addGoblinDirection("/walking left/07.png", goblinsLeft);
+            
+            addGoblinDirection("/walking right/00.png", goblinsRight);
+            addGoblinDirection("/walking right/01.png", goblinsRight);
+            addGoblinDirection("/walking right/02.png", goblinsRight);
+            addGoblinDirection("/walking right/03.png", goblinsRight);
+            addGoblinDirection("/walking right/04.png", goblinsRight);
+            addGoblinDirection("/walking right/05.png", goblinsRight);
+            addGoblinDirection("/walking right/06.png", goblinsRight);
+            addGoblinDirection("/walking right/07.png", goblinsRight);
             
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error! Some files cannot be found!");
@@ -74,6 +95,10 @@ public class AssetManager {
     
     private static void addImage(String name){
         images.add(new Image(fileURL("./assets/images/" + name)));
+    }
+    
+    private static void addGoblinDirection(String name, ArrayList<Image> goblinDirection){
+        goblinDirection.add(new Image(fileURL("./assets/images/" + name)));
     }
     
     private static void addBackground(String name){
@@ -111,7 +136,13 @@ public class AssetManager {
         }
     }
     
-    public static Image getGoblinImage(int position){
-        return goblins.get(position);
+    
+    
+    public static Image getGoblinsRight(int position){
+        return goblinsRight.get(position);
+    }
+    
+    public static Image getGoblinsLeft(int position){
+        return goblinsLeft.get(position);
     }
 }
