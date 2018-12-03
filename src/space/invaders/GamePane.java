@@ -254,6 +254,7 @@ public class GamePane extends Pane {
                     projectileRemove.add(p);
                     enemyProjectiles.remove(p);
                     playerLives--;
+                    AssetManager.getAudio(6).play();
                     if (playerLives == 0) {
                         gameOver();
                     }

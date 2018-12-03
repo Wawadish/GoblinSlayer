@@ -21,7 +21,7 @@ public class GoblinSlayer extends Application {
         AssetManager.preloadAllAssets();
         MenuPane menu = new MenuPane();
         
-        scene = new Scene(menu, 1280, 720);
+        scene = new Scene(menu, 1280, 650);
         
         //the value of paused is not being printed.
         

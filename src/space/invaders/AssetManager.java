@@ -54,6 +54,8 @@ public class AssetManager {
             addSound("Victory.wav");
             //5
             addSound("Regret.wav");
+            //6
+            addSound("Swords_Collide_Sound.wav");
             
             //0
             addSword("original sword.png");
