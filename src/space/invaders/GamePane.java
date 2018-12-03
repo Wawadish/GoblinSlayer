@@ -214,7 +214,7 @@ public class GamePane extends Pane {
             for (int j = 0; j < 8; j++) {
                 enemyPosX += 120;
                 enemies.add(new Enemy(new Vector2D(enemyPosX, enemyPosY),
-                        new Vector2D(3, 0), 40, 40));
+                        new Vector2D(1, 0), 40, 40));
             }
         }
     }
@@ -302,14 +302,21 @@ public class GamePane extends Pane {
 
     private void displayScore() {
         gc.setFill(Color.WHITE);
-        gc.setFont(new Font("Arial", 24));
+        gc.setFont(new Font("Impact", 24));
         gc.fillText("SCORE: " + score, 1100, 30);
     }
+    
 
     private void displayLives() {
         gc.setFill(Color.WHITE);
-        gc.setFont(new Font("Arial", 24));
-        gc.fillText("LIVES: " + playerLives, 50, 30);
+        gc.setFont(new Font("Impact", 24));
+        gc.fillText("LIVES: ", 50, 30);
+        int xValue = 130;
+        for (int i = 0; i < playerLives; i++) {
+            gc.drawImage(AssetManager.getImage(4), xValue, 0, 40, 40);
+            xValue+=40;
+        }
+        
     }
 
     private void loop() {

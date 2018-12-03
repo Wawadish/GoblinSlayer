@@ -40,6 +40,8 @@ public class AssetManager {
             addImage("wheel0.png");
             //3
             addImage("wheel1.png");
+            //4
+            addImage("life.png");
             
             
             //0
