@@ -1,4 +1,4 @@
-package space.invaders;
+package goblin.slayer;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;

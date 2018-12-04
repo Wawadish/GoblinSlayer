@@ -1,4 +1,4 @@
-package space.invaders;
+package goblin.slayer;
 
 import javafx.scene.image.Image;
 

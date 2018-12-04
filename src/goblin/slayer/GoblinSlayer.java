@@ -1,4 +1,4 @@
-package space.invaders;
+package goblin.slayer;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -22,7 +22,7 @@ public class GoblinSlayer extends Application {
         AssetManager.preloadAllAssets();
         MenuPane menu = new MenuPane(1);
         
-        scene = new Scene(menu, 1280, 650);
+        scene = new Scene(menu, 1280, 720);
         
         //the value of paused is not being printed.
         

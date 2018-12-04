@@ -1,4 +1,4 @@
-package space.invaders;
+package goblin.slayer;
 
 import java.io.File;
 import java.io.FileInputStream;

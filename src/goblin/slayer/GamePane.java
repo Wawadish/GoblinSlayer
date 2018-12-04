@@ -1,4 +1,4 @@
-package space.invaders;
+package goblin.slayer;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -36,12 +36,16 @@ public class GamePane extends Pane {
     private boolean rightDirection = true;
     private Timer timer = new Timer();
     int difficulty;
+    int enemyProbs;
+    int enemyVelocity;
 
     //maximum amount of player projectiles at the same time, 
     //change for a "skill"
     private int allowedPlayerProjectiles = 1;
 
     public GamePane(int difficultyTemp) {
+        
+        difficulty = difficultyTemp;
         //Player moves in relation to the mouse
         setOnMouseMoved(e -> {
             posX = e.getX();
@@ -53,7 +57,7 @@ public class GamePane extends Pane {
         initializePane();
         initializeEnemies();
         
-        difficulty = difficultyTemp;
+        
 
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
@@ -128,7 +132,7 @@ public class GamePane extends Pane {
 
     private void addEnemyProjectiles() {
         for (Enemy e : enemies) {
-            int random = (int) (Math.random() * 1250 + 1);
+            int random = (int) (Math.random() * enemyProbs + 1);
             if (random == 5) {
                 enemyProjectiles.add(new Projectile(new Vector2D(e.getX(), e.getY()),
                         new Vector2D(0, 4), new Vector2D(0, 0), 10, 18));
@@ -217,7 +221,7 @@ public class GamePane extends Pane {
             for (int j = 0; j < 8; j++) {
                 enemyPosX += 120;
                 enemies.add(new Enemy(new Vector2D(enemyPosX, enemyPosY),
-                        new Vector2D(1, 0), 40, 40));
+                        new Vector2D(enemyVelocity, 0), 40, 40));
             }
         }
     }
@@ -230,11 +234,32 @@ public class GamePane extends Pane {
         displayScore();
         AssetManager.stopAllSound();
         AssetManager.getAudio(1).play();
-        setBackground(AssetManager.getBackground(1));
+        difficultyCheck();
     }
     
     private void difficultyCheck() {
-        //TODO add difficulty check (change background, music, etc...);
+        switch(difficulty) {
+            case 1:
+                setBackground(AssetManager.getBackground(1));
+                enemyProbs = 1500;
+                enemyVelocity = 1;
+                break;
+            case 2:
+                setBackground(AssetManager.getBackground(1));
+                enemyProbs = 1250;
+                enemyVelocity = 2;
+                break;
+            case 3:
+                setBackground(AssetManager.getBackground(2));
+                enemyProbs = 1000;
+                enemyVelocity = 3;
+                break;
+            case 4: 
+                setBackground(AssetManager.getBackground(3));
+                enemyProbs = 500;
+                enemyVelocity = 4;
+                break;
+        }
     }
 
     //TODO make it iterate for every projectile if powerup
@@ -275,7 +300,7 @@ public class GamePane extends Pane {
     public void enemyPlayerCollison() {
         if (!enemies.isEmpty()) {
             for (Enemy e : enemies) {
-                if (player.collides(e)) {
+                if (player.collides(e) || e.getY() + e.getHeight() >= 719) {
                     gameOver();
                 }
             }
@@ -302,6 +327,7 @@ public class GamePane extends Pane {
 
         this.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
+                AssetManager.stopAllSound();
                 GoblinSlayer.changePane(new MenuPane(difficulty));
             }
         });

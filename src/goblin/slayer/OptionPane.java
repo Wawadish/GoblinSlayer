@@ -1,4 +1,4 @@
-package space.invaders;
+package goblin.slayer;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -26,8 +26,8 @@ public class OptionPane extends Pane {
 
     public OptionPane(int difficultyTemp) {
         
+        
         gameFont = AssetManager.getGameFont();
-        AssetManager.stopAllSound();
         setBackground(AssetManager.getBackground(0));
 
         difficulty = difficultyTemp;
@@ -60,9 +60,9 @@ public class OptionPane extends Pane {
         easy.setLayoutY(720 / 2 + 100);
 
         easy.setOnAction((ActionEvent event) -> {
-            normal.setDisable(easy.isSelected());
-            hard.setDisable(easy.isSelected());
-            insane.setDisable(easy.isSelected());
+            normal.setSelected(false);
+            hard.setSelected(false);
+            insane.setSelected(false);
             difficulty = 1;
         });
 
@@ -74,9 +74,9 @@ public class OptionPane extends Pane {
         normal.setLayoutY(720 / 2 + 100);
 
         normal.setOnAction((ActionEvent event) -> {
-            easy.setDisable(normal.isSelected());
-            hard.setDisable(normal.isSelected());
-            insane.setDisable(normal.isSelected());
+            easy.setSelected(false);
+            hard.setSelected(false);
+            insane.setSelected(false);
             difficulty = 2;
         });
 
@@ -88,9 +88,9 @@ public class OptionPane extends Pane {
         hard.setLayoutY(720 / 2 + 100);
 
         hard.setOnAction((ActionEvent event) -> {
-            easy.setDisable(hard.isSelected());
-            normal.setDisable(hard.isSelected());
-            insane.setDisable(hard.isSelected());
+            easy.setSelected(false);
+            normal.setSelected(false);
+            insane.setSelected(false);
             difficulty = 3;
         });
 
@@ -102,9 +102,9 @@ public class OptionPane extends Pane {
         insane.setLayoutY(720 / 2 + 100);
 
         insane.setOnAction((ActionEvent event) -> {
-            easy.setDisable(insane.isSelected());
-            normal.setDisable(insane.isSelected());
-            hard.setDisable(insane.isSelected());
+            easy.setSelected(false);
+            normal.setSelected(false);
+            hard.setSelected(false);
             difficulty = 4;
         });
         
