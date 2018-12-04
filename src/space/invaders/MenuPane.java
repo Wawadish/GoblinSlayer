@@ -10,7 +10,7 @@ import javafx.scene.shape.Circle;
 
 public class MenuPane extends Pane {
 
-    public MenuPane() {
+    public MenuPane(int difficulty) {
 
         AssetManager.stopAllSound();
 
@@ -24,7 +24,7 @@ public class MenuPane extends Pane {
         //Play Button
         Button playButton = new Button();
         playButton.setOnAction((ActionEvent event) -> {
-            GoblinSlayer.changePane(new GamePane());
+            GoblinSlayer.changePane(new GamePane(difficulty));
         });
         playButton.setLayoutX(1280 / 2 - 140);
         playButton.setLayoutY(720 / 2 - 85 / 2);
@@ -42,7 +42,7 @@ public class MenuPane extends Pane {
         //Option Button
         Button optionButton = new Button();
         optionButton.setOnAction((ActionEvent event) -> {
-            //TODO: switch to option Pane
+            GoblinSlayer.changePane(new OptionPane(difficulty));
         });
         double r = 65;
         optionButton.setShape(new Circle(r));

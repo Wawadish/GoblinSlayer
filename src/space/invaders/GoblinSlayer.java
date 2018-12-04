@@ -11,6 +11,7 @@ public class GoblinSlayer extends Application {
     
     private static Stage window;
     private static Scene scene;
+    public int difficulty;
     
     
     @Override
@@ -19,7 +20,7 @@ public class GoblinSlayer extends Application {
         window.setResizable(false);
         
         AssetManager.preloadAllAssets();
-        MenuPane menu = new MenuPane();
+        MenuPane menu = new MenuPane(1);
         
         scene = new Scene(menu, 1280, 650);
         

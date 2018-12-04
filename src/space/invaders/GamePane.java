@@ -35,12 +35,13 @@ public class GamePane extends Pane {
     private int playerLives = 3;
     private boolean rightDirection = true;
     private Timer timer = new Timer();
+    int difficulty;
 
     //maximum amount of player projectiles at the same time, 
     //change for a "skill"
     private int allowedPlayerProjectiles = 1;
 
-    public GamePane() {
+    public GamePane(int difficultyTemp) {
         //Player moves in relation to the mouse
         setOnMouseMoved(e -> {
             posX = e.getX();
@@ -51,6 +52,8 @@ public class GamePane extends Pane {
         enemies = new ArrayList<>();
         initializePane();
         initializeEnemies();
+        
+        difficulty = difficultyTemp;
 
         //fires a projectile when the mouse is clicked
         setOnMouseClicked(e -> {
@@ -229,6 +232,10 @@ public class GamePane extends Pane {
         AssetManager.getAudio(1).play();
         setBackground(AssetManager.getBackground(1));
     }
+    
+    private void difficultyCheck() {
+        //TODO add difficulty check (change background, music, etc...);
+    }
 
     //TODO make it iterate for every projectile if powerup
     public void playerProjectileCollison() {
@@ -295,23 +302,23 @@ public class GamePane extends Pane {
 
         this.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                GoblinSlayer.changePane(new MenuPane());
+                GoblinSlayer.changePane(new MenuPane(difficulty));
             }
         });
     }
 
     private void displayScore() {
         gc.setFill(Color.WHITE);
-        gc.setFont(new Font("Impact", 24));
+        gc.setFont(AssetManager.getGameFont());
         gc.fillText("SCORE: " + score, 1100, 30);
     }
     
 
     private void displayLives() {
         gc.setFill(Color.WHITE);
-        gc.setFont(new Font("Impact", 24));
+        gc.setFont(AssetManager.getGameFont());
         gc.fillText("LIVES: ", 50, 30);
-        int xValue = 130;
+        int xValue = 175;
         for (int i = 0; i < playerLives; i++) {
             gc.drawImage(AssetManager.getImage(4), xValue, 0, 40, 40);
             xValue+=40;

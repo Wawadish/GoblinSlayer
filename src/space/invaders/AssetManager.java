@@ -1,7 +1,11 @@
 package space.invaders;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -9,6 +13,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.media.AudioClip;
+import javafx.scene.text.Font;
 import javax.swing.JOptionPane;
 
 public class AssetManager {
@@ -19,7 +24,8 @@ public class AssetManager {
     private static ArrayList<AudioClip> audio = new ArrayList<>();
     private static ArrayList<Image> swords = new ArrayList<>();
     private static ArrayList<Image> images = new ArrayList<>();
-    
+    private static Font gameFont;
+
     public static void preloadAllAssets(){
         try{
             //0
@@ -66,6 +72,8 @@ public class AssetManager {
             //2
             addSword("goblin sword.png");
             
+            addFont("Lohengrin.ttf");
+            
             addGoblinDirection("/walking left/00.png", goblinsLeft);
             addGoblinDirection("/walking left/01.png", goblinsLeft);
             addGoblinDirection("/walking left/02.png", goblinsLeft);
@@ -91,6 +99,10 @@ public class AssetManager {
     
     private static String fileURL(String relativePath){
         return new File(relativePath).toURI().toString();
+    }
+    
+    public static void addFont(String name) throws FileNotFoundException {
+        gameFont = Font.loadFont(new FileInputStream(new File("./assets/fonts/" + name)), 24);
     }
     
     private static void addSword(String name){
@@ -134,13 +146,15 @@ public class AssetManager {
         return audio.get(position);
     }
     
+    public static Font getGameFont() {
+        return gameFont;
+    }
+    
     public static void stopAllSound(){
         for (AudioClip ac : audio) {
             ac.stop();
         }
     }
-    
-    
     
     public static Image getGoblinsRight(int position){
         return goblinsRight.get(position);
